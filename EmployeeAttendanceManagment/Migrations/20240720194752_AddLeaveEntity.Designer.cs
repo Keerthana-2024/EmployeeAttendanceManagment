@@ -4,6 +4,7 @@ using EmployeeAttendanceManagement.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeAttendanceManagment.Migrations
 {
     [DbContext(typeof(EmployeeManagementDbContext))]
-    partial class EmployeeManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240720194752_AddLeaveEntity")]
+    partial class AddLeaveEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,51 @@ namespace EmployeeAttendanceManagment.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("EmployeeAttendanceManagement.Model.Leave", b =>
+                {
+                    b.Property<int>("LeaveID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LeaveID"));
+
+                    b.Property<int>("CasualLeaves")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ComboLeaves")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaidLeaves")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SickLeaves")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TakenCasualLeaves")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TakenComboLeaves")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TakenPaidLeaves")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TakenSickLeaves")
+                        .HasColumnType("int");
+
+                    b.HasKey("LeaveID");
+
+                    b.HasIndex("EmployeeID");
+
+                    b.ToTable("Leaves");
+                });
 
             modelBuilder.Entity("EmployeeAttendanceManagment.Model.AttendancePolicy", b =>
                 {
@@ -171,43 +219,15 @@ namespace EmployeeAttendanceManagment.Migrations
                     b.ToTable("OrganizationCharts");
                 });
 
-            modelBuilder.Entity("Leave", b =>
+            modelBuilder.Entity("EmployeeAttendanceManagement.Model.Leave", b =>
                 {
-                    b.Property<int>("LeaveID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.HasOne("EmployeeAttendanceManagment.Model.Employee", "Employee")
+                        .WithMany("Leaves")
+                        .HasForeignKey("EmployeeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LeaveID"));
-
-                    b.Property<int>("CasualLeaves")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("EmployeeID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PaidLeaves")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SickLeaves")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TakenCasualLeaves")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TakenPaidLeaves")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TakenSickLeaves")
-                        .HasColumnType("int");
-
-                    b.HasKey("LeaveID");
-
-                    b.HasIndex("EmployeeID");
-
-                    b.ToTable("Leaves");
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("EmployeeAttendanceManagment.Model.Department", b =>
@@ -262,17 +282,6 @@ namespace EmployeeAttendanceManagment.Migrations
                     b.Navigation("Employee");
 
                     b.Navigation("Manager");
-                });
-
-            modelBuilder.Entity("Leave", b =>
-                {
-                    b.HasOne("EmployeeAttendanceManagment.Model.Employee", "Employee")
-                        .WithMany("Leaves")
-                        .HasForeignKey("EmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("EmployeeAttendanceManagment.Model.Employee", b =>

@@ -1,3 +1,4 @@
+using EmployeeAttendanceManagement.Model;
 using EmployeeAttendanceManagment.Controllers;
 using EmployeeAttendanceManagment.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +23,11 @@ namespace EmployeeAttendanceManagmentTest
         [SetUp]
         public void Setup()
         {
-            _contextMock = new Mock<EmployeeManagementDbContext>();
+            var options = new DbContextOptionsBuilder<EmployeeManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+
+            _contextMock = new Mock<EmployeeManagementDbContext>(options);
             _controller = new EmployeesController(_contextMock.Object);
         }
 
@@ -36,6 +42,12 @@ namespace EmployeeAttendanceManagmentTest
             };
 
             var dbSetMock = new Mock<DbSet<Employee>>();
+            var queryable = new[] { employee }.AsQueryable();
+            dbSetMock.As<IQueryable<Employee>>().Setup(m => m.Provider).Returns(queryable.Provider);
+            dbSetMock.As<IQueryable<Employee>>().Setup(m => m.Expression).Returns(queryable.Expression);
+            dbSetMock.As<IQueryable<Employee>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
+            dbSetMock.As<IQueryable<Employee>>().Setup(m => m.GetEnumerator()).Returns(queryable.GetEnumerator());
+
             _contextMock.Setup(c => c.Employees).Returns(dbSetMock.Object);
             _contextMock.Setup(c => c.Employees.Add(It.IsAny<Employee>())).Verifiable();
             _contextMock.Setup(c => c.SaveChangesAsync(default)).ReturnsAsync(1);
@@ -73,7 +85,7 @@ namespace EmployeeAttendanceManagmentTest
             dbSetMock.As<IQueryable<Employee>>().Setup(m => m.GetEnumerator()).Returns(queryable.GetEnumerator());
 
             _contextMock.Setup(c => c.Employees).Returns(dbSetMock.Object);
-            _contextMock.Setup(c => c.Employees.FirstOrDefaultAsync(It.IsAny<Func<Employee, bool>>(), default))
+            _contextMock.Setup(c => c.Employees.FirstOrDefaultAsync(It.IsAny<Expression<Func<Employee, bool>>>(), default))
                 .ReturnsAsync(employee);
 
             // Act

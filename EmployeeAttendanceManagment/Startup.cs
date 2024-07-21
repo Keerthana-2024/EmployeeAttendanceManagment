@@ -1,4 +1,5 @@
-﻿using EmployeeAttendanceManagment.Model;
+﻿using EmployeeAttendanceManagement.Model;
+using EmployeeAttendanceManagment.Model;
 using EmployeeAttendanceManagment.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;

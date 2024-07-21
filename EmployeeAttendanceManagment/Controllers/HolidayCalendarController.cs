@@ -1,4 +1,5 @@
-﻿using EmployeeAttendanceManagment.Model;
+﻿using EmployeeAttendanceManagement.Model;
+using EmployeeAttendanceManagment.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
