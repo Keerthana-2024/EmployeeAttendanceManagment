@@ -15,7 +15,8 @@ namespace EmployeeAttendanceManagement.Model
         public DbSet<HolidayCalendar> HolidayCalendars { get; set; }
         public DbSet<AttendancePolicy> AttendancePolicies { get; set; }
         public DbSet<Leave> Leaves { get; set; }
-
+        public DbSet<Attendance> Attendances { get; set; }  // Ensure this matches the name used
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure relationships, constraints, etc.
@@ -23,27 +24,34 @@ namespace EmployeeAttendanceManagement.Model
                 .HasOne(e => e.Department)
                 .WithMany()
                 .HasForeignKey(e => e.DepartmentID)
-                .OnDelete(DeleteBehavior.Restrict); // or another delete behavior as needed
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.AttendancePolicy)
                 .WithMany()
                 .HasForeignKey(e => e.AttendancePolicyID)
-                .OnDelete(DeleteBehavior.Restrict); // or another delete behavior as needed
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Relationship for Manager (self-referencing)
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Manager)
                 .WithMany()
                 .HasForeignKey(e => e.ManagerID)
-                .OnDelete(DeleteBehavior.Restrict); // or another delete behavior as needed
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Configure Leave relationships
             modelBuilder.Entity<Leave>()
                 .HasOne(l => l.Employee)
                 .WithMany(e => e.Leaves)
                 .HasForeignKey(l => l.EmployeeID)
-                .OnDelete(DeleteBehavior.Cascade); // Ensure that when an employee is deleted, the associated leaves are also deleted
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Attendance>()
+                .HasOne(a => a.Employee)
+                .WithMany(e => e.Attendances)
+                .HasForeignKey(a => a.EmployeeID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AttendancePolicy>()
+                .HasKey(ap => ap.PolicyID);
 
             base.OnModelCreating(modelBuilder);
         }

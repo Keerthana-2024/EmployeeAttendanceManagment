@@ -18,11 +18,14 @@ namespace EmployeeAttendanceManagment.Controllers
         [HttpPost]
         public IActionResult GenerateToken([FromBody] TokenRequest model)
         {
-            // Validate user credentials here if needed
-            // For simplicity, assuming validation is done elsewhere
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var token = _tokenService.GenerateToken(model.Username);
             return Ok(new { Token = token });
         }
+
     }
 }

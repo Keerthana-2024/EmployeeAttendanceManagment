@@ -2,9 +2,14 @@
 {
     public class AttendancePolicy
     {
-        public int Id { get; set; }
-        public string Region { get; set; }
-        public string PolicyDetails { get; set; }
+
+        public int PolicyID { get; set; }
+        public string PolicyName { get; set; }
+        public string AllowedLocations { get; set; }
+        //public int Id { get; set; }
+        //public string Region { get; set; }
+        //public string PolicyDetails { get; set; }
+
     }
 
 }

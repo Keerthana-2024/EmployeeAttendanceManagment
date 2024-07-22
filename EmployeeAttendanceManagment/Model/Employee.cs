@@ -1,4 +1,5 @@
 ﻿using EmployeeAttendanceManagement.Model;
+using EmployeeAttendanceManagment.Controllers;
 using System;
 using System.Collections.Generic;
 
@@ -26,6 +27,7 @@ namespace EmployeeAttendanceManagment.Model
         public AttendancePolicy AttendancePolicy { get; set; } // Navigation Property
         public Employee Manager { get; set; }
         public ICollection<Leave> Leaves { get; set; } = new List<Leave>();
+        public ICollection<Attendance> Attendances { get; set; }
     }
 
 

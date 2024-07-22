@@ -4,6 +4,7 @@ using EmployeeAttendanceManagement.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeAttendanceManagment.Migrations
 {
     [DbContext(typeof(EmployeeManagementDbContext))]
-    partial class EmployeeManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240721064416_Policy")]
+    partial class Policy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace EmployeeAttendanceManagment.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EmployeeAttendanceManagment.Model.Attendance", b =>
+            modelBuilder.Entity("EmployeeAttendanceManagment.Controllers.Attendance", b =>
                 {
                     b.Property<int>("AttendanceID")
                         .ValueGeneratedOnAdd()
@@ -42,11 +45,14 @@ namespace EmployeeAttendanceManagment.Migrations
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("AttendanceID");
 
                     b.HasIndex("EmployeeID");
 
-                    b.ToTable("Attendances");
+                    b.ToTable("Attendance");
                 });
 
             modelBuilder.Entity("EmployeeAttendanceManagment.Model.AttendancePolicy", b =>
@@ -237,7 +243,7 @@ namespace EmployeeAttendanceManagment.Migrations
                     b.ToTable("Leaves");
                 });
 
-            modelBuilder.Entity("EmployeeAttendanceManagment.Model.Attendance", b =>
+            modelBuilder.Entity("EmployeeAttendanceManagment.Controllers.Attendance", b =>
                 {
                     b.HasOne("EmployeeAttendanceManagment.Model.Employee", "Employee")
                         .WithMany("Attendances")
