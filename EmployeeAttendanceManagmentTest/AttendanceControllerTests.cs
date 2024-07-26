@@ -104,7 +104,7 @@ namespace EmployeeAttendanceManagment.Tests
         }
 
         [Fact]
-        public async Task MarkAttendance_ReturnsOkResult_WhenAttendanceIsMarkedSuccessfully()
+        public async Task MarkAttendance_ReturnsOkResult_WhenAttendanceIsMarkedSuccessfully_WithSimpleLocation()
         {
             // Arrange
             using (var context = new EmployeeManagementDbContext(_options))
@@ -145,6 +145,51 @@ namespace EmployeeAttendanceManagment.Tests
                 var attendance = context.Attendances.FirstOrDefault(a => a.EmployeeID == 1);
                 Assert.NotNull(attendance);
                 Assert.Equal("Location1", attendance.Location);
+            }
+        }
+
+        [Fact]
+        public async Task MarkAttendance_ReturnsOkResult_WhenAttendanceIsMarkedSuccessfully_WithLatLng()
+        {
+            // Arrange
+            using (var context = new EmployeeManagementDbContext(_options))
+            {
+                context.Employees.Add(new Employee { EmployeeID = 1, AttendancePolicyID = 1 });
+                context.AttendancePolicies.Add(new AttendancePolicy { PolicyID = 1, AllowedLocations = "Lat: 43.466752, Lng: -80.5306368" });
+                context.SaveChanges();
+            }
+
+            using (var context = new EmployeeManagementDbContext(_options))
+            {
+                var controller = new AttendanceController(context);
+                var model = new MarkAttendanceRequest { EmployeeID = 1, CurrentLocation = "Lat: 43.466752, Lng: -80.5306368" };
+
+                // Act
+                var result = await controller.MarkAttendance(model);
+
+                // Assert
+                Assert.NotNull(result);
+
+                var okResult = Assert.IsType<OkObjectResult>(result);
+                var value = okResult.Value;
+
+                // Use reflection to get the value of 'message' if it's an anonymous type
+                var valueType = value.GetType();
+                var messageProperty = valueType.GetProperty("message");
+                if (messageProperty != null)
+                {
+                    var message = messageProperty.GetValue(value)?.ToString();
+                    Assert.NotNull(message); // Ensure message is not null
+                    Assert.Equal("Attendance marked successfully.", message);
+                }
+                else
+                {
+                    throw new Exception("The response object does not have a 'message' property.");
+                }
+
+                var attendance = context.Attendances.FirstOrDefault(a => a.EmployeeID == 1);
+                Assert.NotNull(attendance);
+                Assert.Equal("Lat: 43.466752, Lng: -80.5306368", attendance.Location);
             }
         }
 
