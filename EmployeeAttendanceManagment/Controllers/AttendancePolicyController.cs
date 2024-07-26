@@ -19,16 +19,14 @@ namespace EmployeeAttendanceManagment.Controllers
             _context = context;
         }
 
-        // GET: api/attendancepolicy
-        [HttpGet]
+        [HttpGet("attendancepolicy")]
         public async Task<IActionResult> GetAttendancePolicies()
         {
             var policies = await _context.AttendancePolicies.ToListAsync();
             return Ok(policies);
         }
 
-        // POST: api/attendancepolicy
-        [HttpPost]
+        [HttpPost("attendancepolicy")]
         public async Task<IActionResult> CreateAttendancePolicy([FromBody] AttendancePolicy policy)
         {
             if (!ModelState.IsValid)
